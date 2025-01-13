@@ -46,6 +46,12 @@ The nodes utilize PyTorch for efficient tensor operations and implement various 
 - Error handling and recovery
 - Progress tracking
 
+![showcase](https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider/blob/main/showcases/2.png?raw=true)
+
+![showcase](https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider/blob/main/showcases/3.png?raw=true)
+
+![showcase](https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider/blob/main/showcases/4.png?raw=true)
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -56,4 +62,4 @@ MIT License - feel free to use in your own projects.
 
 ## Credits
 
-Created by Benji  and DeepSeek AI Copilot
+Created by Benji and DeepSeek AI Copilot
