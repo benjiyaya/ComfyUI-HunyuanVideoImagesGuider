@@ -1,0 +1,14 @@
+[project]
+name = "comfyui-hunyuanvideoimagesguider"
+description = ""
+version = "1.0.0"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider"
+#  Used by Comfy Registry https://thefuturethinker.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-ComfyUI-HunyuanVideoImagesGuider"
+Icon = ""
