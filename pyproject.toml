@@ -9,6 +9,6 @@ Repository = "https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider"
 #  Used by Comfy Registry https://thefuturethinker.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "benjiyaya"
 DisplayName = "ComfyUI-HunyuanVideoImagesGuider"
 Icon = ""
