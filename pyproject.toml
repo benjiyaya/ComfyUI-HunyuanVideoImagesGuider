@@ -10,5 +10,5 @@ Repository = "https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider"
 
 [tool.comfy]
 PublisherId = ""
-DisplayName = "ComfyUI-ComfyUI-HunyuanVideoImagesGuider"
+DisplayName = "ComfyUI-HunyuanVideoImagesGuider"
 Icon = ""
