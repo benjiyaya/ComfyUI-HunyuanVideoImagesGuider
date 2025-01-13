@@ -52,6 +52,8 @@ The nodes utilize PyTorch for efficient tensor operations and implement various 
 
 ![showcase](https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider/blob/main/showcases/4.png?raw=true)
 
+![showcase](https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider/blob/main/showcases/8.png?raw=true)
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
