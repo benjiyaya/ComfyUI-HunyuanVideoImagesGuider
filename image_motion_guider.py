@@ -86,12 +86,17 @@ class ImageMotionGuider:
             start_y -= img_height
         
         batch = []
+        mirrored_x = torch.flip(image, [2])  # Flip horizontally
+        mirrored_y = torch.flip(image, [1])  # Flip vertically
+        mirrored_both = torch.flip(image, [1, 2])  # Flip both
         
         for i in range(frame_num):
             x_pos = start_x + (step_size_x * i * (-1 if pixel_move_range_x < 0 else 1))
             y_pos = start_y + (step_size_y * i * (-1 if pixel_move_range_y < 0 else 1))
             x_pos = int(x_pos)
             y_pos = int(y_pos)
+            x_pos = x_pos % img_width if pixel_move_range_x != 0 else 0
+            y_pos = y_pos % img_height if pixel_move_range_y != 0 else 0
             
             # Calculate zoom for current frame
             current_zoom = (i / (frame_num - 1)) * zoom if zoom > 0 else 0
@@ -101,38 +106,69 @@ class ImageMotionGuider:
                 x_start = (img_width - crop_width) // 2
                 y_start = (img_height - crop_height) // 2
                 
-                zoomed = torch.nn.functional.interpolate(
+                zoomed_original = torch.nn.functional.interpolate(
                     image[:, y_start:y_start + crop_height, x_start:x_start + crop_width, :].permute(0, 3, 1, 2),
                     size=(img_height, img_width),
                     mode='bilinear'
                 ).permute(0, 2, 3, 1)
+                
+                zoomed_mirror_x = torch.nn.functional.interpolate(
+                    mirrored_x[:, y_start:y_start + crop_height, x_start:x_start + crop_width, :].permute(0, 3, 1, 2),
+                    size=(img_height, img_width),
+                    mode='bilinear'
+                ).permute(0, 2, 3, 1)
+                
+                zoomed_mirror_y = torch.nn.functional.interpolate(
+                    mirrored_y[:, y_start:y_start + crop_height, x_start:x_start + crop_width, :].permute(0, 3, 1, 2),
+                    size=(img_height, img_width),
+                    mode='bilinear'
+                ).permute(0, 2, 3, 1)
+                
+                zoomed_mirror_both = torch.nn.functional.interpolate(
+                    mirrored_both[:, y_start:y_start + crop_height, x_start:x_start + crop_width, :].permute(0, 3, 1, 2),
+                    size=(img_height, img_width),
+                    mode='bilinear'
+                ).permute(0, 2, 3, 1)
             else:
-                zoomed = image
+                zoomed_original = image
+                zoomed_mirror_x = mirrored_x
+                zoomed_mirror_y = mirrored_y
+                zoomed_mirror_both = mirrored_both
             
             canvas = torch.zeros((1, img_height, img_width, image.shape[3]))
             
-            # Fill the entire canvas with repeated images
-            for y in range(-img_height, img_height * 2, img_height):
-                for x in range(-img_width, img_width * 2, img_width):
-                    # Calculate the position for this tile
-                    tile_x = (x - x_pos) % img_width
-                    tile_y = (y - y_pos) % img_height
+            # Process vertical sections
+            for y_section in range(0, img_height, img_height):
+                remaining_height = min(img_height - y_section, img_height)
+                current_y = (y_pos + y_section) % img_height
+                use_flipped_y = ((y_pos + y_section) // img_height) % 2 == 1
+                
+                # Process horizontal sections for each vertical section
+                for x_section in range(0, img_width, img_width):
+                    remaining_width = min(img_width - x_section, img_width)
+                    current_x = (x_pos + x_section) % img_width
+                    use_flipped_x = ((x_pos + x_section) // img_width) % 2 == 1
                     
-                    # Calculate where this tile should be placed on the canvas
-                    canvas_x = tile_x
-                    canvas_y = tile_y
+                    # Select appropriate image based on flip states
+                    if use_flipped_x and use_flipped_y:
+                        current_image = zoomed_mirror_both
+                    elif use_flipped_x:
+                        current_image = zoomed_mirror_x
+                    elif use_flipped_y:
+                        current_image = zoomed_mirror_y
+                    else:
+                        current_image = zoomed_original
                     
-                    # Calculate the visible portion of this tile
-                    width = min(img_width - canvas_x, img_width)
-                    height = min(img_height - canvas_y, img_height)
+                    # Calculate dimensions to copy
+                    width = min(img_width - current_x, remaining_width)
+                    height = min(img_height - current_y, remaining_height)
                     
-                    if width > 0 and height > 0:
-                        # Copy the visible portion of the tile to the canvas
-                        canvas[0, canvas_y:canvas_y + height, canvas_x:canvas_x + width, :] = \
-                            zoomed[0, :height, :width, :]
+                    # Copy the section
+                    canvas[0, y_section:y_section + height, x_section:x_section + width, :] = \
+                        current_image[0, current_y:current_y + height, current_x:current_x + width, :]
             
             batch.append(canvas)
-        
+            
         return (torch.cat(batch, dim=0),)
 
 NODE_CLASS_MAPPINGS = {
