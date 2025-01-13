@@ -16,7 +16,7 @@ A specialized node for ComfyUI that enable motion and animation capabilities for
 1. Clone this repository into your ComfyUI custom nodes directory:
 ```bash
 cd ComfyUI/custom_nodes
-git clone https://github.com/yourusername/comfyui-motion-nodes.git
+git clone https://github.com/benjiyaya/ComfyUI-HunyuanVideoImagesGuider.git
 ```
 
 2. Restart ComfyUI to load the new nodes
