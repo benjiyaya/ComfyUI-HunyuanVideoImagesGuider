@@ -1,6 +1,8 @@
 # ComfyUI-HunyuanVideoImagesGuider
 A specialized node for ComfyUI that enable motion and animation capabilities for image as guider for video processing In Hunyuan Video T2V model weights.
 
+How to use this node , you can check it out in this video : https://youtu.be/fq95OLDVCdU
+
 ## Features
 
 ### Hunyuan Video Image To Guider
